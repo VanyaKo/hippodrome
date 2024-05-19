@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -17,20 +18,18 @@ class HorseTest {
 
     @Test
     void shouldReturnStringPassedToConstructorWhenCallGetName() {
-        Horse horse = new Horse(DEFAULT_NAME, DEFAULT_SPEED);
-        assertThat(horse.getName(), is(DEFAULT_NAME));
+        assertThat(new Horse(DEFAULT_NAME, DEFAULT_SPEED).getName(), is(DEFAULT_NAME));
     }
 
     @Test
     void shouldReturnSpeedPassedToConstructorWhenCallGetSpeed() {
-        Horse horse = new Horse(DEFAULT_NAME, DEFAULT_SPEED);
-        assertThat(horse.getSpeed(), is(DEFAULT_SPEED));
+        assertThat(new Horse(DEFAULT_NAME, DEFAULT_SPEED).getSpeed(), is(DEFAULT_SPEED));
     }
 
     @Nested
     class ConstructorTest {
         @Test
-        void shouldThrowAndContainErrorMessageWhenFirstParameterIsNull() {
+        void shouldThrowAndContainErrorMessageWhenNameParameterIsNull() {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
                     () -> new Horse(null, DEFAULT_SPEED));
             String message = "Name cannot be null.";
@@ -38,8 +37,8 @@ class HorseTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"", " ", "  ", "    "})
-        void shouldThrowAndContainErrorMessageWhenFirstParameterIsEmptyOrWhitespacesOnly(String name) {
+        @ValueSource(strings = {"", " ", "\t", "n", " \t", " \n", "\t\n"})
+        void shouldThrowAndContainErrorMessageWhenNameParameterIsEmptyOrWhitespacesOnly(String name) {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
                     () -> new Horse(name, DEFAULT_SPEED));
             String message = "Name cannot be blank.";
@@ -47,7 +46,7 @@ class HorseTest {
         }
 
         @Test
-        void shouldThrowWhenSecondParametersIsNegative() {
+        void shouldThrowWhenSpeedParameterIsNegative() {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
                     () -> new Horse(DEFAULT_NAME, -DEFAULT_SPEED));
             String message = "Speed cannot be negative.";
@@ -55,7 +54,7 @@ class HorseTest {
         }
 
         @Test
-        void shouldThrowWhenThirdParametersIsNegative() {
+        void shouldThrowWhenDistanceParameterIsNegative() {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
                     () -> new Horse(DEFAULT_NAME, DEFAULT_SPEED, -1));
             String message = "Distance cannot be negative.";
@@ -74,13 +73,13 @@ class HorseTest {
         }
 
         @ParameterizedTest
-        @ValueSource(doubles = {10})
-        void shouldAssignDistanceWithSpecificFormula(double result) {
+        @CsvSource({"4,10"})
+        void shouldAssignDistanceWithSpecificFormula(double distance, double result) {
             try(MockedStatic<Horse> horseStatic = mockStatic(Horse.class)) {
                 horseStatic.when(() -> Horse.getRandomDouble(0.2, 0.9)).thenReturn(result);
-
-                Horse horse = new Horse(DEFAULT_NAME, DEFAULT_SPEED, 10);
+                Horse horse = new Horse(DEFAULT_NAME, DEFAULT_SPEED, distance);
                 double expectedDistance = horse.getDistance() + horse.getSpeed() * Horse.getRandomDouble(0.2, 0.9);
+
                 horse.move();
 
                 assertThat(horse.getDistance(), is(expectedDistance));

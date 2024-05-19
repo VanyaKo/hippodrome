@@ -9,6 +9,6 @@ class MainTest {
     @Disabled("Run it by hand, if necessary")
     @SneakyThrows
     void shouldSucceedWhenRunMainMethod() {
-        Main.main(new String[] {});
+        Main.main(null);
     }
 }

@@ -53,8 +53,7 @@ class HippodromeTest {
                 horses.add(mock(Horse.class));
             }
 
-            Hippodrome hippodrome = new Hippodrome(horses);
-            hippodrome.move();
+            new Hippodrome(horses).move();
 
             for(int i = 0; i < count; i++) {
                 verify(horses.get(i)).move();
