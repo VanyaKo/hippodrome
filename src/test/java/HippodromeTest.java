@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,7 +39,7 @@ class HippodromeTest {
         void shouldReturnListPassedToConstructorWhenCallGetHorses() {
             List<Horse> horses = new ArrayList<>();
             for(int i = 0; i < 30; i++) {
-                horses.add(new Horse("Horse #" + i, i, i));
+                horses.add(new Horse("Horse #" + i, ThreadLocalRandom.current().nextDouble(2.4, 3)));
             }
             Hippodrome hippodrome = new Hippodrome(horses);
             assertEquals(horses, hippodrome.getHorses());
@@ -62,7 +63,7 @@ class HippodromeTest {
 
         @Test
         void shouldReturnHorseWithMaxDistanceWhenCallGetWinner() {
-            List<Horse> horses = List.of(new Horse("Sugar", 0, 10), new Horse("Spirit", 0, 20));
+            List<Horse> horses = List.of(new Horse("Sugar", 2.5, 10), new Horse("Spirit", 2.4, 20));
 
             Hippodrome hippodrome = new Hippodrome(horses);
             double maxDistance = hippodrome.getWinner().getDistance();

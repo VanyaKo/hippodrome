@@ -8,24 +8,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mockStatic;
 
 class HorseTest {
 
-    public static final String DEFAULT_HORSE_NAME = "horse";
+    public static final String DEFAULT_NAME = "horse";
+    public static final double DEFAULT_SPEED = 2.4;
 
     @Test
     void shouldReturnStringPassedToConstructorWhenCallGetName() {
-        Horse horse = new Horse(DEFAULT_HORSE_NAME, 0, 0);
-        assertThat(horse.getName(), is(DEFAULT_HORSE_NAME));
+        Horse horse = new Horse(DEFAULT_NAME, DEFAULT_SPEED);
+        assertThat(horse.getName(), is(DEFAULT_NAME));
     }
 
     @Test
     void shouldReturnSpeedPassedToConstructorWhenCallGetSpeed() {
-        double speed = 95;
-        Horse horse = new Horse(DEFAULT_HORSE_NAME, speed, 0);
-        assertThat(horse.getSpeed(), is(speed));
+        Horse horse = new Horse(DEFAULT_NAME, DEFAULT_SPEED);
+        assertThat(horse.getSpeed(), is(DEFAULT_SPEED));
     }
 
     @Nested
@@ -33,7 +32,7 @@ class HorseTest {
         @Test
         void shouldThrowAndContainErrorMessageWhenFirstParameterIsNull() {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-                    () -> new Horse(null, 0, 0));
+                    () -> new Horse(null, DEFAULT_SPEED));
             String message = "Name cannot be null.";
             assertThat(illegalArgumentException.getMessage(), containsString(message));
         }
@@ -42,7 +41,7 @@ class HorseTest {
         @ValueSource(strings = {"", " ", "  ", "    "})
         void shouldThrowAndContainErrorMessageWhenFirstParameterIsEmptyOrWhitespacesOnly(String name) {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-                    () -> new Horse(name, 0, 0));
+                    () -> new Horse(name, DEFAULT_SPEED));
             String message = "Name cannot be blank.";
             assertThat(illegalArgumentException.getMessage(), containsString(message));
         }
@@ -50,7 +49,7 @@ class HorseTest {
         @Test
         void shouldThrowWhenSecondParametersIsNegative() {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-                    () -> new Horse(DEFAULT_HORSE_NAME, -1, 0));
+                    () -> new Horse(DEFAULT_NAME, -DEFAULT_SPEED));
             String message = "Speed cannot be negative.";
             assertThat(illegalArgumentException.getMessage(), containsString(message));
         }
@@ -58,7 +57,7 @@ class HorseTest {
         @Test
         void shouldThrowWhenThirdParametersIsNegative() {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-                    () -> new Horse(DEFAULT_HORSE_NAME, 0, -1));
+                    () -> new Horse(DEFAULT_NAME, DEFAULT_SPEED, -1));
             String message = "Distance cannot be negative.";
             assertThat(illegalArgumentException.getMessage(), containsString(message));
         }
@@ -69,7 +68,7 @@ class HorseTest {
         @Test
         void shouldInvokeGetRandomDoubleWithSpecifiedParameters() {
             try(MockedStatic<Horse> horse = mockStatic(Horse.class)) {
-                new Horse(DEFAULT_HORSE_NAME, 0, 0).move();
+                new Horse(DEFAULT_NAME, DEFAULT_SPEED).move();
                 horse.verify(() -> Horse.getRandomDouble(0.2, 0.9));
             }
         }
@@ -78,13 +77,13 @@ class HorseTest {
         @ValueSource(doubles = {10})
         void shouldAssignDistanceWithSpecificFormula(double result) {
             try(MockedStatic<Horse> horseStatic = mockStatic(Horse.class)) {
-                horseStatic.when(() -> Horse.getRandomDouble(anyDouble(), anyDouble())).thenReturn(result);
+                horseStatic.when(() -> Horse.getRandomDouble(0.2, 0.9)).thenReturn(result);
 
-                int distance = 0;
-                Horse horse = new Horse(DEFAULT_HORSE_NAME, 95, distance);
+                Horse horse = new Horse(DEFAULT_NAME, DEFAULT_SPEED, 10);
+                double expectedDistance = horse.getDistance() + horse.getSpeed() * Horse.getRandomDouble(0.2, 0.9);
                 horse.move();
 
-                assertThat(horse.getDistance(), is(distance + horse.getSpeed() * Horse.getRandomDouble(0.2, 0.9)));
+                assertThat(horse.getDistance(), is(expectedDistance));
             }
         }
     }
