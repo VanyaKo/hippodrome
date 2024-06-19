@@ -37,7 +37,7 @@ class HorseTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"", " ", "\t", "n", " \t", " \n", "\t\n"})
+        @ValueSource(strings = {"", " ", "\t", "\n", " \t", " \n", "\t\n"})
         void shouldThrowAndContainErrorMessageWhenNameParameterIsEmptyOrWhitespacesOnly(String name) {
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
                     () -> new Horse(name, DEFAULT_SPEED));
