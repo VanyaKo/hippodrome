@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <RollingFile name="logToRollingFile" fileName="logs/hippodrome.${date:yyyy-MM-dd}.log"
+                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz" append="false">
+            <PatternLayout>
+                <Pattern>%d %-5p %c: %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${baseDir}/logs" maxDepth="1">
+                    <IfFileName glob="hippodrome.*.log"/>
+                    <IfLastModified age="7d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="ALL">
+            <AppenderRef ref="logToRollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
