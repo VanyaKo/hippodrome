@@ -30,8 +30,8 @@ jobs:
         #       берем все что после   /  чтобы задать имя образа
         #       set-output выставляет переменную в этом шаге
         run: |
-          echo "::set-output name=IMAGE_NAME::${GITHUB_REPOSITORY#*/}"
-          echo "::set-output name=DOCKERHUB_IMAGE_NAME::docker.pkg.github.com/${GITHUB_REPOSITORY}/${GITHUB_REPOSITORY#*/}"
+          echo "::set-output name=IMAGE_NAME::vanyako/hippodrome"
+          echo "::set-output name=DOCKERHUB_IMAGE_NAME::docker.pkg.github.com/vanyako/hippodrome"
 
       #     Build Docker image:
       - name: Build and tag image
