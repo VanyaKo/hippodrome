@@ -66,10 +66,10 @@ class HorseTest {
     class MoveTest {
         @Test
         void shouldInvokeGetRandomDoubleWithSpecifiedParameters() {
-//            try(MockedStatic<Horse> horse = mockStatic(Horse.class)) {
-//                new Horse(DEFAULT_NAME, DEFAULT_SPEED).move();
-//                horse.verify(() -> Horse.getRandomDouble(0.2, 0.9));
-//            }
+            try(MockedStatic<Horse> horse = mockStatic(Horse.class)) {
+                new Horse(DEFAULT_NAME, DEFAULT_SPEED).move();
+                horse.verify(() -> Horse.getRandomDouble(0.2, 0.9));
+            }
         }
 
         @ParameterizedTest
